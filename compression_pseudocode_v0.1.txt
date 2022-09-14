@@ -1,0 +1,23 @@
+## use java 8
+
+
+# write to fastq to BAM
+java -Xmx8G -jar picard.jar FastqToSam \
+    -F1 test_1000_R1.fastq \
+    -O test_1000_R1_fastqtosam_unaligned.bam \
+    -SM test_1000 \
+    -PL ILLUMINA \
+    -PU run_barcode.lane
+
+
+#
+samtools import test_1000_R1.fastq -0 -i  -o out.bam
+
+
+# write BAM to fastq
+java -jar picard.jar SamToFastq \
+     -I test_1000_R1_fastqtosam_unaligned.bam \
+     -FASTQ test_1000_R1_revert.fastq\
+     -CREATE_INDEX true
+
+

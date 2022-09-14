@@ -1,0 +1,42 @@
+#### setup gatk container
+### needs samtools-1.15 or greater
+
+### outside container
+## write store command
+# e.g. store $sample_list
+
+## write retrieve command
+# e.g. retrieve $sample_list
+
+
+### inside container
+## unpack list
+# e.g., for i in list; split of fastq.gz --> name --> execute command
+
+##store command
+#fastq.gz -> bam
+samtools import -i ${name}.fastq.gz -o ${PATHtoSTORAGE}/${name}.bam
+#fastq.gz -> cram
+samtools import -i ${name}.fastq.gz -o ${PATHtoSTORAGE}/${name}.cram
+
+##retrieve command
+#bam -> fastq.gz
+samtools fastq ${name}.bam -i --index-format ni*i* > ${PATHtoSDPActive}${name}.fastq.gz
+#cram -> fastq.gz
+???????
+samtools fastq -@ 8 -1 ${name}_1.fq.gz -2 ${name}_2.fq.gz ${name}.cram > ${PATHtoSDPActive}${name}
+
+### Questions
+# store as library? (flow, lane, sample)
+# is it enough: fastq.gz:bam (1:08) and fastq.gz:cram (1:0.6)
+# stnd fastq.gz format style:
+	# (CASAVA) R1 + R2 with index in header (N...N+N...N) OR
+	# (generic) R1 + I1 + I2 + R2
+# reformating fastq.gz standard
+	# OGSR --> fastq.gz (stnd) --> store --> retrieve --> fastq.gz (stnd)
+	# ??? --> fastq.gz (???) -(other pkg)-> fastq.gz (stnd) --> store/retrieve
+
+
+### references
+# https://www.biostars.org/p/335200/
+# http://www.htslib.org/doc/samtools-import.html
